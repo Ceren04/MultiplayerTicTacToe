@@ -6,31 +6,54 @@ class GameBoard:
         """
         self.board = [[None for _ in range(3)] for _ in range(3)]
         self.size = 3
-
+        self.products = [[2,3,5],[7,11,13],[17,19,23]]
+        self.winning_patterns = [30,1001,7429,238,627,1495,506,935]
+        self.player_product = {
+            "X": 1,
+            "O": 1
+            }
+        
 
     def make_move(self, row, col, player):
-    
         move_validation = self.is_valid_move(row, col)
 
         if move_validation:
             self.board[row][col] = player
+            self.player_product[player] *= self.products[row][col]
             return True
         else:
             return False
 
     def is_valid_move(self, row, col):
-
         if (row <= 2 and row >= 0) and (col <= 2 and col >= 0):
             if self.board[row][col] is None :
                 return True
         else:
             return False
-
+        
     def check_winner(self):
-        pass
+        """
+            Winning patterns : 
+            Satırlar: (0,1,2), (3,4,5), (6,7,8)
+
+            Sütunlar: (0,3,6), (1,4,7), (2,5,8)
+
+            Çaprazlar: (0,4,8), (2,4,6) 
+        """
+        for winning_pattern in self.winning_patterns:
+            if self.player_product["X"] % winning_pattern:
+                return {"state" : True, "player" : "X" }
+            if self.player_product["O"] % winning_pattern:
+                return {"state" : True, "player" : "Y" }
+        return {"state" : False}
+        
 
     def is_board_full(self):
-        pass
+        for row in range(3):
+            for col in range(3):
+                if self.board[row][col] == None:
+                    return False
+        return True
 
     def display(self):
         """
@@ -73,5 +96,4 @@ class GameBoard:
         self.board = [[None for _ in range(3)] for _ in range(3)]
         print("Board sıfırlandı!")
 
-    def get_state(self):
-        pass
+
