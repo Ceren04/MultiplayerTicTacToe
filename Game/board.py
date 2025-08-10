@@ -9,10 +9,22 @@ class GameBoard:
 
 
     def make_move(self, row, col, player):
-        pass
+    
+        move_validation = self.is_valid_move(row, col)
+
+        if move_validation:
+            self.board[row][col] = player
+            return True
+        else:
+            return False
 
     def is_valid_move(self, row, col):
-        pass
+
+        if (row <= 2 and row >= 0) and (col <= 2 and col >= 0):
+            if self.board[row][col] is None :
+                return True
+        else:
+            return False
 
     def check_winner(self):
         pass
