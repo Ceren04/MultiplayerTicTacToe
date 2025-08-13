@@ -50,8 +50,12 @@ class GameClient:
     
 
     async def listen_for_updates(self):
-        pass
-    def display_board(self):
-        pass
+        while True : 
+            try:
+                message = await self.websocket.recv()
+                return message
+            except self.websocket.ConnectionClosed:
+                print("Failure in client")
+                break
     def get_user_input(self):
         pass
