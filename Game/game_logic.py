@@ -11,7 +11,7 @@ class Game:
         self.player1 = player1
         self.player2 = player2
         self.game_board = GameBoard()
-        self.current_player = self.player1
+        self.current_player = "X"
         self.game_status = Status.STARTED
         
     def start_game(self):
@@ -40,8 +40,8 @@ class Game:
                 print(f"Hata: {msg}")
         """
         if player.is_turn(self.current_player):
-            if self.game_board.is_valid_move():
-                self.game_board.make_move(row,col,player)
+            if self.game_board.is_valid_move(row,col):
+                self.game_board.make_move(row,col,player.symbol)
                 if self.game_board.check_winner():
                     self.game_status = Status.FINISHED
                 
@@ -59,10 +59,10 @@ class Game:
         - Her başarılı hamle sonrası çağrılır
         - Multiplayer'da critical: sıra takibi için
         """
-        if self.current_player == self.player1:
-            self.current_player = self.player2
+        if self.current_player == self.player1.symbol:
+            self.current_player = self.player2.symbol
         else:
-            self.current_player = self.player1
+            self.current_player = self.player1.symbol
             return self.current_player
     def end_game(self):
         
