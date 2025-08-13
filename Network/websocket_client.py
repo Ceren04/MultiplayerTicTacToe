@@ -28,7 +28,6 @@ class GameClient:
             return False
 
     async def disconnect(self):
-
         if self.websocket:
             await self.websocket.close()
             self.websocket = None
@@ -45,9 +44,9 @@ class GameClient:
             except Exception:
                 return False
 
-    async def send_move(self, row, col):
-        
+    async def send_move(self, player, row, col):
         message = {
+            "player_info": player,
             "type": "move",
             "row": row,
             "col": col

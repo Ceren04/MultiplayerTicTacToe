@@ -45,20 +45,25 @@ class Game:
                 if self.game_board.check_winner():
                     self.game_status = Status.FINISHED
                 
-                return (True, f"{player} hamlesini yaptı",)
+                return (True, f"{player} hamlesini yaptı",self.game_board.board)
             
     def switch_turn(self):
         """
-    Sırayı diğer oyuncuya geçir
-    
-    Logic:
-    - Eğer current_player == player1 ise -> player2'ye geçir
-    - Eğer current_player == player2 ise -> player1'e geçir
-    
-    Kullanım:
-    - Her başarılı hamle sonrası çağrılır
-    - Multiplayer'da critical: sıra takibi için
+        Sırayı diğer oyuncuya geçir
+        
+        Logic:
+        - Eğer current_player == player1 ise -> player2'ye geçir
+        - Eğer current_player == player2 ise -> player1'e geçir
+        
+        Kullanım:
+        - Her başarılı hamle sonrası çağrılır
+        - Multiplayer'da critical: sıra takibi için
         """
+        if self.current_player == self.player1:
+            self.current_player = self.player2
+        else:
+            self.current_player = self.player1
+            return self.current_player
     def end_game(self):
         
     def get_game_state(self):
