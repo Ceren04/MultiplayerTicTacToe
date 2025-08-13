@@ -2,8 +2,8 @@ import asyncio
 import websockets
 import json
 from enum import Enum
-from protocol import GameProtocol, MessageType
-from validator import GameValidator
+from Utils.protocol import GameProtocol, MessageType
+from Utils.validator import GameValidator
 
 class ClientStatus(Enum):
     DISCONNECTED = 1

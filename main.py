@@ -1,12 +1,12 @@
 import asyncio
 import sys
 import os
-from terminal_ui import TerminalUI
-from websocket_server import GameServer
-from websocket_client import GameClient
-from player import Player
-from game_logic import Game
-from validator import GameValidator
+from UI.terminal_ui import TerminalUI
+from Network.websocket_server import GameServer
+from Network.websocket_client import GameClient
+from Game.player import Player
+from Game.game_logic import Game
+from Utils.validator import GameValidator
 
 class TicTacToeApp:
     """
