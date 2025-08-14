@@ -17,7 +17,7 @@ class Player:
 
                 parts = move.split(",")
 
-                if len(parts != 2):
+                if len(parts) != 2:
                     print("lütfen 2 değer girin!")
                 
                 row = int(parts[0])
