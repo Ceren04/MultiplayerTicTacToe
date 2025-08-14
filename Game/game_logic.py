@@ -38,6 +38,7 @@ class Game:
         6. Sırayı diğer oyuncuya geçir (switch_turn)
         7. Return: (success: bool, message: str, game_state: dict)
         """
+
         # 1. Sıra kontrolü
         if not player.is_turn(self.current_player):
             return False, "Sizin sıranız değil!", self.get_game_state()
@@ -49,6 +50,7 @@ class Game:
         # 3. Hamleyi uygula
         if self.game_board.make_move(row, col, player.symbol):
             self.move_count += 1
+
             
             # 4. Kazanan kontrolü
             winner_result = self.game_board.check_winner()
@@ -84,6 +86,7 @@ class Game:
         - Multiplayer'da critical: sıra takibi için
         """
         self.current_player = "O" if self.current_player == "X" else "X"
+
         
     def end_game(self):
         """
