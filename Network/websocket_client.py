@@ -27,8 +27,14 @@ class GameClient:
             self.status = ClientStatus.DISCONNECTED
             return False
 
-    #async def disconnect(self):
+    async def disconnect(self):
 
+        if self.websocket:
+            await self.websocket.close()
+            self.websocket = None
+        self.stats = ClientStatus.DISCONNECTED
+        return True 
+    
     async def send_message(self, message):
         
         if self.websocket and self.status == ClientStatus.CONNECTED:
@@ -57,5 +63,3 @@ class GameClient:
             except self.websocket.ConnectionClosed:
                 print("Failure in client")
                 break
-    def get_user_input(self):
-        pass
