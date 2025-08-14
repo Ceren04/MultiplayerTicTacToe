@@ -134,7 +134,8 @@ class TicTacToeApp:
         try:
             # Oyuncu oluştur (symbol server tarafından atanacak)
             player = Player(player_id=1, symbol="X", name=player_name)
-            
+            await client.send_player_join(player)
+            self.ui.show_info("join isteği gönderildi")
             self.ui.show_info("Oyuncu bekleniyor...")
             
             # Game loop

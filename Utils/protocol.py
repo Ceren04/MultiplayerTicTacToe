@@ -14,7 +14,7 @@ class MessageType(Enum):
     HEARTBEAT = "heartbeat"
     CHAT = "chat"
     WELCOME = "welcome"
-
+    WAITING = "waiting"
 class GameProtocol:
     """
     Network communication protocol for Tic-Tac-Toe

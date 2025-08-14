@@ -41,9 +41,9 @@ class GameBoard:
             Çaprazlar: (0,4,8), (2,4,6) 
         """
         for winning_pattern in self.winning_patterns:
-            if self.player_product["X"] % winning_pattern:
+            if self.player_product["X"] % winning_pattern ==0:
                 return {"state" : True, "player" : "X" }
-            if self.player_product["O"] % winning_pattern:
+            if self.player_product["O"] % winning_pattern == 0:
                 return {"state" : True, "player" : "O" }
         return {"state" : False}
         
