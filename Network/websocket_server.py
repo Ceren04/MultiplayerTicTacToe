@@ -1,12 +1,16 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import asyncio
 import websockets
 import json
 import uuid
 from enum import Enum
-from protocol import GameProtocol, MessageType
-from player import Player
-from game_logic import Game
-from validator import GameValidator
+from Utils.protocol import GameProtocol, MessageType
+from Game.player import Player
+from Game.game_logic import Game
+from Utils.validator import GameValidator
 
 
 class Status(Enum):

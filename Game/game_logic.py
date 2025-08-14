@@ -1,4 +1,4 @@
-from board import GameBoard
+from Game.board import GameBoard
 from enum import Enum
 
 class Status(Enum):
