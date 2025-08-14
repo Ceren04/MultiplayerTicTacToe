@@ -27,7 +27,7 @@ class GameServer:
         self.game_rooms = {}  # {room_id : GameRoom}
         self.waiting_room = None  # Bekleyen oyuncular için
         
-    async def handle_client(self, websocket, path):
+    async def handle_client(self, websocket, path=None):
         """
         Yeni client connection'ını işle ve message loop'unu başlat
         """
@@ -117,42 +117,52 @@ class GameServer:
                 await self.send_error(websocket, f"Geçersiz oyuncu verisi: {error}")
                 return
             
+            print(f"Player join isteği alındı: {player_data}")
+            
+            # Waiting room yoksa veya doluysa yeni oluştur
+            if not self.waiting_room or self.waiting_room.is_full():
+                self.waiting_room = self.create_game_room()
+                print(f"Yeni waiting room oluşturuldu: {self.waiting_room.room_id}")
+            
+            # Symbol ata (ilk gelen X, ikinci O)
+            symbol = "X" if len(self.waiting_room.players) == 0 else "O"
+            
+            player_info = {
+                "id": player_data.get("id"),
+                "name": player_data.get("name"),
+                "symbol": symbol
+            }
+            
             # Player'ı waiting room'a ekle
-            if self.waiting_room and not self.waiting_room.is_full():
-                # Symbol ata (ilk gelen X, ikinci O)
-                symbol = "X" if len(self.waiting_room.players) == 0 else "O"
+            if self.waiting_room.add_player(websocket, player_info):
+                print(f"Oyuncu eklendi: {player_info['name']} ({symbol}) - Room: {self.waiting_room.room_id}")
                 
-                player_info = {
-                    "id": player_data.get("id"),
-                    "name": player_data.get("name"),
-                    "symbol": symbol
+                # Waiting mesajı gönder
+                waiting_message = {
+                    "type": "waiting",
+                    "data": {
+                        "message": "İkinci oyuncuyu bekliyorsunuz..." if symbol == "X" else "Oyuna katıldınız!",
+                        "your_symbol": symbol,
+                        "room_id": self.waiting_room.room_id,
+                        "players_in_room": len(self.waiting_room.players)
+                    }
                 }
+                await websocket.send(json.dumps(waiting_message))
                 
-                if self.waiting_room.add_player(websocket, player_info):
-                    print(f"Oyuncu eklendi: {player_info['name']} ({symbol})")
-                    
-                    # Room dolduysa oyunu başlat
-                    if self.waiting_room.is_full():
-                        await self.start_room_game(self.waiting_room)
-                    else:
-                        # Oyuncu bekleme mesajı gönder
-                        waiting_message = {
-                            "type": "waiting",
-                            "data": {
-                                "message": "İkinci oyuncuyu bekliyorsunuz...",
-                                "your_symbol": symbol
-                            }
-                        }
-                        await websocket.send(json.dumps(waiting_message))
-                else:
-                    await self.send_error(websocket, "Room'a eklenemedi")
+                # Room dolduysa oyunu başlat
+                if self.waiting_room.is_full():
+                    print(f"Room doldu, oyun başlatılıyor: {self.waiting_room.room_id}")
+                    await self.start_room_game(self.waiting_room)
+                    # Yeni waiting room için hazırlan
+                    self.waiting_room = None
+                
             else:
-                await self.send_error(websocket, "Müsait room yok")
+                await self.send_error(websocket, "Room'a eklenemedi")
                 
         except Exception as e:
             print(f"Player join hatası: {e}")
             await self.send_error(websocket, "Katılma işlemi başarısız")
-    
+        
     async def handle_player_move(self, websocket, data):
         """
         Oyuncu hamlesini işle

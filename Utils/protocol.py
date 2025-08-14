@@ -13,6 +13,7 @@ class MessageType(Enum):
     ERROR = "error"
     HEARTBEAT = "heartbeat"
     CHAT = "chat"
+    WELCOME = "welcome"
 
 class GameProtocol:
     """

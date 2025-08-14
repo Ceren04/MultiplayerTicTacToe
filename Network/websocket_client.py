@@ -381,39 +381,45 @@ class GameClient:
             
             # Ana oyun döngüsü
             while self.is_connected():
-                # Server'dan mesaj bekle
-                message = await self.listen_for_updates()
-                if not message:
-                    break
-                
-                # Mesajı handle et
-                parsed_message = self.handle_server_message(message)
-                if not parsed_message:
-                    continue
-                
-                message_type = parsed_message.get("type")
-                data = parsed_message.get("data", {})
-                
-                # Eğer bizim sıramızsa ve oyun devam ediyorsa
-                if (message_type == MessageType.GAME_STATE.value and 
-                    data.get("current_player") == self.player_symbol and
-                    not data.get("is_game_over", False)):
-                    
-                    # Kullanıcıdan hamle al
-                    move = self.get_user_input()
-                    if move is None:  # Quit
+                try:
+                    # Server'dan mesaj bekle (timeout ekleyelim)
+                    message = await asyncio.wait_for(self.listen_for_updates(), timeout=30.0)
+                    if not message:
                         break
                     
-                    row, col = move
-                    # Hamleyi gönder
-                    if not await self.send_move(player, row, col):
-                        print("Hamle gönderilemedi!")
+                    # Mesajı handle et
+                    parsed_message = self.handle_server_message(message)
+                    if not parsed_message:
+                        continue
+                    
+                    message_type = parsed_message.get("type")
+                    data = parsed_message.get("data", {})
+                    
+                    # Eğer bizim sıramızsa ve oyun devam ediyorsa
+                    if (message_type == MessageType.GAME_STATE.value and 
+                        data.get("current_player") == self.player_symbol and
+                        not data.get("is_game_over", False)):
+                        
+                        # Kullanıcıdan hamle al
+                        move = self.get_user_input()
+                        if move is None:  # Quit
+                            break
+                        
+                        row, col = move
+                        # Hamleyi gönder
+                        if not await self.send_move(player, row, col):
+                            print("Hamle gönderilemedi!")
+                    
+                    # Oyun bittiyse döngüden çık
+                    elif message_type == MessageType.GAME_END.value:
+                        input("Devam etmek için Enter'a basın...")
+                        break
+                        
+                except asyncio.TimeoutError:
+                    # Heartbeat gönder
+                    await self.send_heartbeat()
+                    continue
                 
-                # Oyun bittiyse döngüden çık
-                elif message_type == MessageType.GAME_END.value:
-                    input("Devam etmek için Enter'a basın...")
-                    break
-            
         except KeyboardInterrupt:
             print("\nOyun döngüsü kullanıcı tarafından durduruldu.")
         except Exception as e:

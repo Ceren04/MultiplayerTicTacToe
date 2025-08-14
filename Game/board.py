@@ -44,7 +44,7 @@ class GameBoard:
             if self.player_product["X"] % winning_pattern:
                 return {"state" : True, "player" : "X" }
             if self.player_product["O"] % winning_pattern:
-                return {"state" : True, "player" : "Y" }
+                return {"state" : True, "player" : "O" }
         return {"state" : False}
         
 

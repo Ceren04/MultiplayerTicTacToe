@@ -145,7 +145,7 @@ class TicTacToeApp:
                     break
                 
                 # Mesajı parse et
-                from protocol import GameProtocol
+                from Utils.protocol import GameProtocol
                 parsed_message = GameProtocol.deserialize_message(message)
                 
                 if not parsed_message:
